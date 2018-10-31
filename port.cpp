@@ -1,27 +1,31 @@
 #include "port.h"
 #include "vdsl.h"
+#include <QDebug>
 
-Port::Port(QWidget *parent, QString name) : QWidget(parent)
+Port::Port(QWidget *parent, QString name, Orientation orientation) : QWidget(parent)
 {
     m_Label     = new QLabel();
-    m_Label->setMaximumHeight(20);
-
     m_Connector = new Connector();
 
+    m_Label->setMaximumHeight(20);
     setName(name);
 
-    if(m_Orientation == Orientation::left)
+    m_Orientation = orientation;
+
+    if(orientation == Orientation::left)
     {
-        layout.addWidget(m_Label);
         layout.addWidget(m_Connector);
+        layout.addWidget(m_Label);
     }
     else
     {
-        layout.addWidget(m_Connector);
         layout.addWidget(m_Label);
+        layout.addWidget(m_Connector);
     }
 
     this->setLayout(&layout);
+
+    emit connected(nullptr);
 }
 
 Port::~Port()
@@ -40,9 +44,45 @@ Port::Orientation Port::orientation()
     return m_Orientation;
 }
 
+bool Port::connectTo(Port *port)
+{
+    bool successful = false;
+
+    if(port->type() == this->type())
+        return successful;
+
+    if(this->type() == Type::input)
+    {
+        successful = connect(port, port->interface(), this, this->interface());
+    }
+    else
+    {
+        successful = connect(this, this->interface(), port, port->interface());
+    }
+
+    if(successful)
+    {
+        emit connected(port);
+
+        this->onConnect();
+        port->onConnect();
+    }
+
+    return successful;
+}
+
 void Port::mousePressEvent(QMouseEvent *)
 {
-    VDSL::selectedPort = this;
+    if(VDSL::selectedPort == nullptr)
+    {
+        VDSL::selectedPort = this;
+    }
+    else
+    {
+        bool success = connectTo(VDSL::selectedPort);
+
+        qDebug() << success;
+    }
 }
 
 void Port::setName(QString name)

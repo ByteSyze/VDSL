@@ -17,26 +17,33 @@ class Port : public QWidget
 {
     Q_OBJECT
 public:
-    explicit Port(QWidget *parent = nullptr, QString name = "");
-    ~Port();
 
     enum class Orientation { left, right };
+    enum class Type { input, output };
+
+    explicit Port(QWidget *parent = nullptr, QString name = "", Orientation orientation = Orientation::left);
+    ~Port();
 
     QString name();
+    void setName(QString);
 
     QPoint connectorPos();
 
     Orientation orientation();
 
-protected:
+    bool connectTo(Port *port);
 
-    Orientation m_Orientation = Orientation::left;
+protected:
 
     void mousePressEvent(QMouseEvent *event) override;
 
-private:
+    virtual const char* interface() = 0;
+    virtual Type type() const = 0;
+    virtual void onConnect() = 0;
 
-    void setName(QString);
+    Orientation m_Orientation;
+
+private:
 
     QString   m_Name;
 
@@ -44,6 +51,16 @@ private:
 
     Connector *m_Connector;
     QLabel    *m_Label;
+
+//public slots:
+
+//    void onConnect(Port*);
+//    void onDisconnect(Port*);
+
+signals:
+
+    void connected(Port*);
+    void disconnected(Port*);
 };
 
 #endif // PORT_H

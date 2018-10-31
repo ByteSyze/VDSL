@@ -3,6 +3,7 @@
 
 #include <QColor>
 #include <QLayout>
+#include <QList>
 #include <QWidget>
 #include "input.h"
 #include "output.h"
@@ -18,8 +19,8 @@ public:
 
 protected:
 
-    Input*  inputs;
-    Output* outputs;
+    QList<Input*>*  inputs;
+    QList<Output*>* outputs;
 
 private:
 

@@ -30,7 +30,9 @@ SOURCES += \
     transceiver.cpp \
     port.cpp \
     connector.cpp \
-    vdslframe.cpp
+    vdslframe.cpp \
+    stringoutput.cpp \
+    stringinput.cpp
 
 HEADERS += \
         vdsl.h \
@@ -39,7 +41,9 @@ HEADERS += \
     transceiver.h \
     port.h \
     connector.h \
-    vdslframe.h
+    vdslframe.h \
+    stringoutput.h \
+    stringinput.h
 
 FORMS += \
         vdsl.ui
