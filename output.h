@@ -2,19 +2,28 @@
 #define OUTPUT_H
 
 #include "port.h"
-#include <QVector>
+#include <QList>
 
 class Output : public Port
 {
     Q_OBJECT
 public:
-    explicit Output(QWidget *parent = nullptr);
+    explicit Output(QWidget *parent = nullptr, QString name = "Output");
+    ~Output();
 
-    virtual const char* getOutputSignal() = 0;
+    Type type() const;
+    bool isConnected(Port *);
+
+    QList<Port *> *getConnected();
 
 private:
 
-    QVector<Port*> *connectedPorts;
+    QList<Port*> *connectedPorts;
+
+protected:
+
+    void onConnect(Port *);
+    void onDisconnect(Port *);
 
 };
 

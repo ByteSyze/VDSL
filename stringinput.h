@@ -1,9 +1,9 @@
 #ifndef STRINGINPUT_H
 #define STRINGINPUT_H
 
-#include "port.h"
+#include "input.h"
 
-class StringInput : public Port
+class StringInput : public Input
 {
     Q_OBJECT
 
@@ -13,9 +13,6 @@ public:
 protected:
 
     const char *interface();
-    Type type() const;
-
-    void onConnect();
 
 public slots:
 

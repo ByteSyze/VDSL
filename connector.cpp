@@ -5,6 +5,8 @@ Connector::Connector(QWidget *parent) : QWidget(parent)
 {
     m_Border = QRectF(0,0,10,10);
     m_Center = QRectF(1,1,8,8);
+
+    setCursor(Qt::PointingHandCursor);
 }
 
 void Connector::paintEvent(QPaintEvent*)
@@ -27,6 +29,11 @@ void Connector::paintEvent(QPaintEvent*)
     painter.drawEllipse(m_Center);
 }
 
+void Connector::mousePressEvent(QMouseEvent *event)
+{
+    emit clicked();
+}
+
 QSize Connector::minimumSizeHint() const
 {
     return QSize(m_Border.width()+1,m_Border.height()+1);
@@ -34,5 +41,6 @@ QSize Connector::minimumSizeHint() const
 
 QSize Connector::sizeHint() const
 {
-    return QSize(m_Border.width()+1,m_Border.height()+1);
+    return minimumSizeHint();
+    //return QSize(m_Border.width()+1,m_Border.height()+1);
 }

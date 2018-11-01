@@ -27,23 +27,23 @@ SOURCES += \
         vdsl.cpp \
     input.cpp \
     output.cpp \
-    transceiver.cpp \
     port.cpp \
     connector.cpp \
     vdslframe.cpp \
     stringoutput.cpp \
-    stringinput.cpp
+    stringinput.cpp \
+    modulewidget.cpp
 
 HEADERS += \
         vdsl.h \
     input.h \
     output.h \
-    transceiver.h \
     port.h \
     connector.h \
     vdslframe.h \
     stringoutput.h \
-    stringinput.h
+    stringinput.h \
+    modulewidget.h
 
 FORMS += \
         vdsl.ui

@@ -1,5 +1,5 @@
-#ifndef VDSLSCROLLAREA_H
-#define VDSLSCROLLAREA_H
+#ifndef VDSLFRAME_H
+#define VDSLFRAME_H
 
 #include <QFrame>
 
@@ -12,8 +12,8 @@ private:
 
     void paintEvent(QPaintEvent *event) override;
 
-    void mouseMoveEvent(QMouseEvent *event) override;
-    void mousePressEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *) override;
+    void mousePressEvent(QMouseEvent *) override;
 };
 
-#endif // VDSLSCROLLAREA_H
+#endif // VDSLFRAME_H

@@ -33,15 +33,23 @@ public:
 
     bool connectTo(Port *port);
 
+    virtual Type type() const = 0;
+    virtual bool isConnected(Port *) = 0;
+
 protected:
 
-    void mousePressEvent(QMouseEvent *event) override;
+//    void mousePressEvent(QMouseEvent *event) override;
 
     virtual const char* interface() = 0;
-    virtual Type type() const = 0;
-    virtual void onConnect() = 0;
+
+    virtual void onConnect(Port *) = 0;
+    virtual void onDisconnect(Port *) = 0;
 
     Orientation m_Orientation;
+
+private slots:
+
+    void onConnectorClicked(void);
 
 private:
 
@@ -52,15 +60,6 @@ private:
     Connector *m_Connector;
     QLabel    *m_Label;
 
-//public slots:
-
-//    void onConnect(Port*);
-//    void onDisconnect(Port*);
-
-signals:
-
-    void connected(Port*);
-    void disconnected(Port*);
 };
 
 #endif // PORT_H

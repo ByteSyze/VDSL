@@ -13,11 +13,17 @@ private:
 
     void paintEvent(QPaintEvent *event) override;
 
-    QRectF m_Border;
-    QRectF m_Center;
+    void mousePressEvent(QMouseEvent *event) override;
 
     QSize minimumSizeHint() const override;
     QSize sizeHint() const override;
+
+    QRectF m_Border;
+    QRectF m_Center;
+
+signals:
+
+    void clicked(void);
 
 };
 

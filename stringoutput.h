@@ -1,9 +1,9 @@
 #ifndef STRINGOUTPUT_H
 #define STRINGOUTPUT_H
 
-#include "port.h"
+#include "output.h"
 
-class StringOutput : public Port
+class StringOutput : public Output
 {
     Q_OBJECT
 
@@ -12,14 +12,7 @@ public:
 
 protected:
 
-    const char* interface();
-    Type type() const;
-
-    void onConnect();
-
-public slots:
-
-    void onConnect(Port*);
+    const char *interface();
 
 signals:
 

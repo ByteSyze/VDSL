@@ -7,9 +7,15 @@ class Input : public Port
 {
     Q_OBJECT
 public:
-    explicit Input(QWidget *parent = nullptr);
+    explicit Input(QWidget *parent = nullptr, QString name = "Input");
 
-    virtual const char* getInputSlot() = 0;
+    Type type() const;
+    bool isConnected(Port *); //NOTE: inputs should only have one connection at a time.
+
+protected:
+
+    void onConnect(Port *);
+    void onDisconnect(Port *);
 };
 
 #endif // INPUT_H

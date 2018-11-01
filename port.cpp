@@ -7,7 +7,7 @@ Port::Port(QWidget *parent, QString name, Orientation orientation) : QWidget(par
     m_Label     = new QLabel();
     m_Connector = new Connector();
 
-    m_Label->setMaximumHeight(20);
+    //this->setMaximumHeight(30);
     setName(name);
 
     m_Orientation = orientation;
@@ -25,7 +25,7 @@ Port::Port(QWidget *parent, QString name, Orientation orientation) : QWidget(par
 
     this->setLayout(&layout);
 
-    emit connected(nullptr);
+    connect(m_Connector, SIGNAL(clicked()), this, SLOT(onConnectorClicked()));
 }
 
 Port::~Port()
@@ -50,6 +50,8 @@ bool Port::connectTo(Port *port)
 
     if(port->type() == this->type())
         return successful;
+    if(port->isConnected(this))
+        return successful;
 
     if(this->type() == Type::input)
     {
@@ -62,16 +64,14 @@ bool Port::connectTo(Port *port)
 
     if(successful)
     {
-        emit connected(port);
-
-        this->onConnect();
-        port->onConnect();
+        this->onConnect(port);
+        port->onConnect(this);
     }
 
     return successful;
 }
 
-void Port::mousePressEvent(QMouseEvent *)
+void Port::onConnectorClicked()
 {
     if(VDSL::selectedPort == nullptr)
     {
