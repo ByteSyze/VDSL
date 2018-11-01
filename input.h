@@ -12,10 +12,23 @@ public:
     Type type() const;
     bool isConnected(Port *); //NOTE: inputs should only have one connection at a time.
 
+    bool isDataReady();
+
 protected:
+
+    void setDataReady(bool);
 
     void onConnect(Port *);
     void onDisconnect(Port *);
+
+private:
+
+    bool m_DataReady = false;
+
+signals:
+
+    void dataReady(void);
+
 };
 
 #endif // INPUT_H

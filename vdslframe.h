@@ -14,6 +14,10 @@ private:
 
     void mouseMoveEvent(QMouseEvent *) override;
     void mousePressEvent(QMouseEvent *) override;
+
+signals:
+
+    void run(void);
 };
 
 #endif // VDSLFRAME_H

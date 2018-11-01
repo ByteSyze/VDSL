@@ -16,5 +16,18 @@ bool Input::isConnected(Port *p)
     else return false;
 }
 
-void Input::onConnect(Port *p){}
-void Input::onDisconnect(Port *p){}
+void Input::setDataReady(bool ready)
+{
+    m_DataReady = ready;
+
+    if(ready == true)
+        emit dataReady();
+}
+
+bool Input::isDataReady()
+{
+    return m_DataReady;
+}
+
+void Input::onConnect(Port *){}
+void Input::onDisconnect(Port *){}

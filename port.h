@@ -38,14 +38,16 @@ public:
 
 protected:
 
-//    void mousePressEvent(QMouseEvent *event) override;
-
     virtual const char* interface() = 0;
 
     virtual void onConnect(Port *) = 0;
     virtual void onDisconnect(Port *) = 0;
 
     Orientation m_Orientation;
+
+signals:
+
+    void connectionEstablished(Port *);
 
 private slots:
 

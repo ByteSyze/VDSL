@@ -2,6 +2,8 @@
 #include "stringinput.h"
 #include "stringoutput.h"
 
+#include <QDebug>
+
 ModuleWidget::ModuleWidget(QWidget *parent) : QFrame(parent)
 {
     inputs  = new QList<Input *>;
@@ -24,9 +26,44 @@ ModuleWidget::~ModuleWidget()
 {
     delete inputs;
     delete outputs;
+
+    mainLayout->deleteLater();
+    inputLayout->deleteLater();
+    outputLayout->deleteLater();
 }
 
-void ModuleWidget::mouseMoveEvent(QMouseEvent *event)
+void ModuleWidget::registerInput(Input *input)
+{
+    if(!inputs->contains(input))
+    {
+        inputs->append(input);
+        connect(input,SIGNAL(dataReady(Input*)),this,SLOT(onDataReady(Input*)));
+    }
+}
+
+void ModuleWidget::unregisterInput(Input *input)
+{
+    if(inputs->contains(input))
+    {
+        inputs->removeOne(input);
+        disconnect(input,SIGNAL(dataReady(Input*)),this,SLOT(onDataReady(Input*)));
+    }
+}
+
+void ModuleWidget::registerOutput(Output *output)
+{
+    if(!outputs->contains(output))
+    {
+        outputs->append(output);
+    }
+}
+
+void ModuleWidget::unregisterOutput(Output *output)
+{
+    outputs->removeOne(output);
+}
+
+void ModuleWidget::mouseMoveEvent(QMouseEvent *)
 {
     if(isBeingDragged)
     {
@@ -39,12 +76,37 @@ void ModuleWidget::mouseMoveEvent(QMouseEvent *event)
     }
 }
 
-void ModuleWidget::mousePressEvent(QMouseEvent *event)
+void ModuleWidget::mousePressEvent(QMouseEvent *)
 {
     isBeingDragged = true;
 }
 
-void ModuleWidget::mouseReleaseEvent(QMouseEvent *event)
+void ModuleWidget::mouseReleaseEvent(QMouseEvent *)
 {
     isBeingDragged = false;
+}
+
+void ModuleWidget::performAction()
+{
+    qDebug() << "Let's do something!";
+}
+
+void ModuleWidget::onDataReady()
+{
+    QList<Input*>::Iterator it;
+    bool allDataReady = true;
+
+    for(it = inputs->begin(); it != inputs->end(); it++)
+    {
+        if(!(*it)->isDataReady())
+        {
+            allDataReady = false;
+            break;
+        }
+    }
+
+    if(allDataReady)
+    {
+        performAction();
+    }
 }

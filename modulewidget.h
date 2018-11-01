@@ -13,20 +13,26 @@ class ModuleWidget : public QFrame
     Q_OBJECT
 public:
     explicit ModuleWidget(QWidget *parent = nullptr);
-    virtual ~ModuleWidget();
+    virtual ~ModuleWidget() override;
 
 protected:
 
-    QList<Input *>  *inputs;
-    QList<Output *> *outputs;
+    void registerInput(Input *);
+    void unregisterInput(Input *);
+
+    void registerOutput(Output *);
+    void unregisterOutput(Output *);
+
+    void performAction(void);
 
 private:
-
-    bool isBeingDragged = false;
 
     void mouseMoveEvent(QMouseEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
+
+    QList<Input *>  *inputs;
+    QList<Output *> *outputs;
 
     QHBoxLayout *mainLayout;
     QLayout     *contentLayout;
@@ -34,9 +40,14 @@ private:
     QVBoxLayout *inputLayout;
     QVBoxLayout *outputLayout;
 
+    bool isBeingDragged = false;
+
 signals:
 
 public slots:
+
+    void onDataReady();
+
 };
 
 #endif // MODULEWIDGET_H

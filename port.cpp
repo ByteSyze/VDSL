@@ -66,6 +66,9 @@ bool Port::connectTo(Port *port)
     {
         this->onConnect(port);
         port->onConnect(this);
+
+        //emit connectionEstablished(port);
+        //emit port->connectionEstablished(this);
     }
 
     return successful;
