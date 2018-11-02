@@ -43,6 +43,8 @@ protected:
     virtual void onConnect(Port *) = 0;
     virtual void onDisconnect(Port *) = 0;
 
+    virtual bool allowConnection(Port *);
+
     Orientation m_Orientation;
 
 signals:

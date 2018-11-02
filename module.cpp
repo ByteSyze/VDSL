@@ -1,10 +1,10 @@
-#include "modulewidget.h"
+#include "module.h"
 #include "stringinput.h"
 #include "stringoutput.h"
 
 #include <QDebug>
 
-ModuleWidget::ModuleWidget(QWidget *parent) : QFrame(parent)
+Module::Module(QString name, QWidget *parent) : QFrame(parent)
 {
     inputs  = new QList<Input *>;
     outputs = new QList<Output *>;
@@ -13,7 +13,12 @@ ModuleWidget::ModuleWidget(QWidget *parent) : QFrame(parent)
     inputLayout  = new QVBoxLayout;
     outputLayout = new QVBoxLayout;
 
+    m_Name = name;
+
+    moduleLabel  = new QLabel(name);
+
     mainLayout->addLayout(inputLayout);
+    mainLayout->addWidget(moduleLabel);
     mainLayout->addLayout(outputLayout);
 
     setStyleSheet("background:gray;");
@@ -22,48 +27,65 @@ ModuleWidget::ModuleWidget(QWidget *parent) : QFrame(parent)
     setLayout(mainLayout);
 }
 
-ModuleWidget::~ModuleWidget()
+Module::~Module()
 {
     delete inputs;
     delete outputs;
+
+    moduleLabel->deleteLater();
 
     mainLayout->deleteLater();
     inputLayout->deleteLater();
     outputLayout->deleteLater();
 }
 
-void ModuleWidget::registerInput(Input *input)
+QString Module::name()
+{
+    return m_Name;
+}
+
+void Module::registerInput(Input *input)
 {
     if(!inputs->contains(input))
     {
         inputs->append(input);
-        connect(input,SIGNAL(dataReady(Input*)),this,SLOT(onDataReady(Input*)));
+
+        inputLayout->addWidget(input);
+        inputLayout->setAlignment(input, Qt::AlignVCenter);
+
+        connect(input,SIGNAL(dataReady()),this,SLOT(onDataReady()));
     }
 }
 
-void ModuleWidget::unregisterInput(Input *input)
+void Module::unregisterInput(Input *input)
 {
     if(inputs->contains(input))
     {
         inputs->removeOne(input);
+        inputLayout->removeWidget(input);
+
         disconnect(input,SIGNAL(dataReady(Input*)),this,SLOT(onDataReady(Input*)));
     }
 }
 
-void ModuleWidget::registerOutput(Output *output)
+void Module::registerOutput(Output *output)
 {
     if(!outputs->contains(output))
     {
         outputs->append(output);
+
+        outputLayout->addWidget(output);
+        outputLayout->setAlignment(output, Qt::AlignVCenter);
     }
 }
 
-void ModuleWidget::unregisterOutput(Output *output)
+void Module::unregisterOutput(Output *output)
 {
     outputs->removeOne(output);
+    outputLayout->removeWidget(output);
 }
 
-void ModuleWidget::mouseMoveEvent(QMouseEvent *)
+void Module::mouseMoveEvent(QMouseEvent *)
 {
     if(isBeingDragged)
     {
@@ -76,28 +98,26 @@ void ModuleWidget::mouseMoveEvent(QMouseEvent *)
     }
 }
 
-void ModuleWidget::mousePressEvent(QMouseEvent *)
+void Module::mousePressEvent(QMouseEvent *)
 {
     isBeingDragged = true;
 }
 
-void ModuleWidget::mouseReleaseEvent(QMouseEvent *)
+void Module::mouseReleaseEvent(QMouseEvent *)
 {
     isBeingDragged = false;
 }
 
-void ModuleWidget::performAction()
-{
-    qDebug() << "Let's do something!";
-}
-
-void ModuleWidget::onDataReady()
+void Module::onDataReady()
 {
     QList<Input*>::Iterator it;
     bool allDataReady = true;
 
     for(it = inputs->begin(); it != inputs->end(); it++)
     {
+        if((*it) == QObject::sender())
+            continue;
+
         if(!(*it)->isDataReady())
         {
             allDataReady = false;
@@ -107,6 +127,16 @@ void ModuleWidget::onDataReady()
 
     if(allDataReady)
     {
-        performAction();
+        run();
+    }
+}
+
+void Module::onInit()
+{
+    QList<Input*>::Iterator it;
+
+    for(it = inputs->begin(); it != inputs->end(); it++)
+    {
+        (*it)->invalidateData();
     }
 }

@@ -5,6 +5,11 @@ StringInput::StringInput(QWidget *parent) : Input(parent)
 {
 }
 
+QString StringInput::data()
+{
+    return m_Data;
+}
+
 const char *StringInput::interface()
 {
     return SLOT(receive(QString));
@@ -12,5 +17,6 @@ const char *StringInput::interface()
 
 void StringInput::receive(QString str)
 {
-    qDebug() << str;
+    m_Data = str;
+    setDataReady(true);
 }

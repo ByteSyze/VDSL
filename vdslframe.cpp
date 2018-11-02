@@ -3,6 +3,7 @@
 #include "port.h"
 #include "output.h"
 #include <QPainter>
+#include <QDebug>
 
 VDSLFrame::VDSLFrame(QWidget *parent) : QFrame (parent)
 {
@@ -10,6 +11,8 @@ VDSLFrame::VDSLFrame(QWidget *parent) : QFrame (parent)
     this->setMinimumSize(QSize(1000,1000));
 
     this->setStyleSheet("background:white;");
+
+    this->grabKeyboard();
 }
 
 void VDSLFrame::paintEvent(QPaintEvent *event)
@@ -83,6 +86,12 @@ void VDSLFrame::mousePressEvent(QMouseEvent *e)
         VDSL::selectedPort = nullptr;
         this->update();
     }
+}
+
+void VDSLFrame::keyPressEvent(QKeyEvent *)
+{
+    qDebug() << "Running...";
+    emit run();
 }
 
 void VDSLFrame::mouseMoveEvent(QMouseEvent *)

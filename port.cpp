@@ -52,6 +52,8 @@ bool Port::connectTo(Port *port)
         return successful;
     if(port->isConnected(this))
         return successful;
+    if(this->allowConnection(port) == false || port->allowConnection(this) == false)
+        return successful;
 
     if(this->type() == Type::input)
     {
@@ -67,11 +69,15 @@ bool Port::connectTo(Port *port)
         this->onConnect(port);
         port->onConnect(this);
 
-        //emit connectionEstablished(port);
-        //emit port->connectionEstablished(this);
+        //TODO emit connection signal and remove onConnect()
     }
 
     return successful;
+}
+
+bool Port::allowConnection(Port *)
+{
+    return true;
 }
 
 void Port::onConnectorClicked()

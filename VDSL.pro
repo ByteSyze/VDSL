@@ -32,7 +32,7 @@ SOURCES += \
     vdslframe.cpp \
     stringoutput.cpp \
     stringinput.cpp \
-    modulewidget.cpp
+    module.cpp
 
 HEADERS += \
         vdsl.h \
@@ -43,7 +43,7 @@ HEADERS += \
     vdslframe.h \
     stringoutput.h \
     stringinput.h \
-    modulewidget.h
+    module.h
 
 FORMS += \
         vdsl.ui

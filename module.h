@@ -1,5 +1,5 @@
-#ifndef MODULEWIDGET_H
-#define MODULEWIDGET_H
+#ifndef MODULE_H
+#define MODULE_H
 
 #include <QColor>
 #include <QLayout>
@@ -8,12 +8,14 @@
 #include "input.h"
 #include "output.h"
 
-class ModuleWidget : public QFrame
+class Module : public QFrame
 {
     Q_OBJECT
 public:
-    explicit ModuleWidget(QWidget *parent = nullptr);
-    virtual ~ModuleWidget() override;
+    explicit Module(QString name = "", QWidget *parent = nullptr);
+    virtual ~Module() override;
+
+    QString name();
 
 protected:
 
@@ -23,7 +25,7 @@ protected:
     void registerOutput(Output *);
     void unregisterOutput(Output *);
 
-    void performAction(void);
+    virtual void run() = 0;
 
 private:
 
@@ -34,11 +36,15 @@ private:
     QList<Input *>  *inputs;
     QList<Output *> *outputs;
 
+    QLabel      *moduleLabel;
+
     QHBoxLayout *mainLayout;
     QLayout     *contentLayout;
 
     QVBoxLayout *inputLayout;
     QVBoxLayout *outputLayout;
+
+    QString m_Name;
 
     bool isBeingDragged = false;
 
@@ -47,7 +53,8 @@ signals:
 public slots:
 
     void onDataReady();
+    void onInit();
 
 };
 
-#endif // MODULEWIDGET_H
+#endif // MODULE_H

@@ -29,5 +29,22 @@ bool Input::isDataReady()
     return m_DataReady;
 }
 
-void Input::onConnect(Port *){}
-void Input::onDisconnect(Port *){}
+void Input::invalidateData()
+{
+    setDataReady(false);
+}
+
+void Input::onConnect(Port *port)
+{
+    connectedPort = port;
+}
+
+void Input::onDisconnect(Port *port)
+{
+    connectedPort = nullptr;
+}
+
+bool Input::allowConnection(Port *)
+{
+    return (connectedPort == nullptr); //Allow only one connection at a time.
+}

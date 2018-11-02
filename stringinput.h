@@ -10,9 +10,15 @@ class StringInput : public Input
 public:
     explicit StringInput(QWidget *parent = nullptr);
 
+    QString data();
+
 protected:
 
     const char *interface();
+
+private:
+
+    QString m_Data;
 
 public slots:
 

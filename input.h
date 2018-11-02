@@ -13,6 +13,7 @@ public:
     bool isConnected(Port *); //NOTE: inputs should only have one connection at a time.
 
     bool isDataReady();
+    void invalidateData();
 
 protected:
 
@@ -21,7 +22,11 @@ protected:
     void onConnect(Port *);
     void onDisconnect(Port *);
 
+    bool allowConnection(Port *);
+
 private:
+
+    Port *connectedPort = nullptr;
 
     bool m_DataReady = false;
 

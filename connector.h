@@ -11,9 +11,9 @@ public:
 
 private:
 
-    void paintEvent(QPaintEvent *event) override;
+    void paintEvent(QPaintEvent *) override;
 
-    void mousePressEvent(QMouseEvent *event) override;
+    void mousePressEvent(QMouseEvent *) override;
 
     QSize minimumSizeHint() const override;
     QSize sizeHint() const override;

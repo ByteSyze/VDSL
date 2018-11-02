@@ -29,7 +29,7 @@ void Connector::paintEvent(QPaintEvent*)
     painter.drawEllipse(m_Center);
 }
 
-void Connector::mousePressEvent(QMouseEvent *event)
+void Connector::mousePressEvent(QMouseEvent *)
 {
     emit clicked();
 }
