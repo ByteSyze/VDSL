@@ -9,7 +9,9 @@ Module::Module(QString name, QWidget *parent) : QFrame(parent)
     inputs  = new QList<Input *>;
     outputs = new QList<Output *>;
 
-    mainLayout   = new QHBoxLayout;
+    mainLayout    = new QHBoxLayout;
+    contentLayout = new QVBoxLayout;
+
     inputLayout  = new QVBoxLayout;
     outputLayout = new QVBoxLayout;
 
@@ -17,11 +19,14 @@ Module::Module(QString name, QWidget *parent) : QFrame(parent)
 
     moduleLabel  = new QLabel(name);
 
+    contentLayout->addWidget(moduleLabel);
+
+    mainLayout->setSizeConstraint(QLayout::SetMinimumSize);
+
     mainLayout->addLayout(inputLayout);
-    mainLayout->addWidget(moduleLabel);
+    mainLayout->addLayout(contentLayout);
     mainLayout->addLayout(outputLayout);
 
-    setStyleSheet("background:gray;");
     setFrameStyle(QFrame::Panel | QFrame::Plain);
 
     setLayout(mainLayout);
@@ -37,6 +42,16 @@ Module::~Module()
     mainLayout->deleteLater();
     inputLayout->deleteLater();
     outputLayout->deleteLater();
+}
+
+void Module::invalidate()
+{
+    QList<Input*>::Iterator it;
+
+    for(it = inputs->begin(); it != inputs->end(); it++)
+    {
+        (*it)->invalidateData();
+    }
 }
 
 QString Module::name()
@@ -128,15 +143,5 @@ void Module::onDataReady()
     if(allDataReady)
     {
         run();
-    }
-}
-
-void Module::onInit()
-{
-    QList<Input*>::Iterator it;
-
-    for(it = inputs->begin(); it != inputs->end(); it++)
-    {
-        (*it)->invalidateData();
     }
 }

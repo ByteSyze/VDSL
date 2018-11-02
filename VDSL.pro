@@ -32,7 +32,10 @@ SOURCES += \
     vdslframe.cpp \
     stringoutput.cpp \
     stringinput.cpp \
-    module.cpp
+    module.cpp \
+    Modules/concatenate.cpp \
+    Modules/stringprinter.cpp \
+    Modules/stringinputfield.cpp
 
 HEADERS += \
         vdsl.h \
@@ -43,7 +46,10 @@ HEADERS += \
     vdslframe.h \
     stringoutput.h \
     stringinput.h \
-    module.h
+    module.h \
+    Modules/concatenate.h \
+    Modules/stringprinter.h \
+    Modules/stringinputfield.h
 
 FORMS += \
         vdsl.ui

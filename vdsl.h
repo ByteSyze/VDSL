@@ -2,6 +2,7 @@
 #define VDSL_H
 
 #include <QMainWindow>
+#include "vdslframe.h"
 
 class Port;
 
@@ -18,6 +19,13 @@ public:
     ~VDSL();
 
     static Port* selectedPort;
+
+private:
+
+    VDSLFrame *frame;
+
+private slots:
+    void on_pushButtonStart_clicked();
 
 private:
     Ui::VDSL *ui;

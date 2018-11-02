@@ -42,5 +42,4 @@ QSize Connector::minimumSizeHint() const
 QSize Connector::sizeHint() const
 {
     return minimumSizeHint();
-    //return QSize(m_Border.width()+1,m_Border.height()+1);
 }

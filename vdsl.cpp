@@ -6,7 +6,12 @@
 #include "module.h"
 #include "stringoutput.h"
 #include "stringinput.h"
+
 #include <QPainter>
+
+#include <Modules/stringinputfield.h>
+#include <Modules/concatenate.h>
+#include <Modules/stringprinter.h>
 
 Port* VDSL::selectedPort = nullptr;
 
@@ -16,11 +21,33 @@ VDSL::VDSL(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    VDSLFrame *frame = new VDSLFrame;
+    frame = new VDSLFrame;
     ui->scrollArea->setWidget(frame);
+
+    StringInputField *field1 = new StringInputField;
+    StringInputField *field2 = new StringInputField;
+
+    connect(frame, SIGNAL(tick()), field1, SLOT(onDataReady()));
+    connect(frame, SIGNAL(tick()), field2, SLOT(onDataReady()));
+
+    Concatenate *concat      = new Concatenate;
+
+    StringPrinter *printer   = new StringPrinter;
+
+    field1->setParent(frame);
+    field2->setParent(frame);
+
+    concat->setParent(frame);
+
+    printer->setParent(frame);
 }
 
 VDSL::~VDSL()
 {
     delete ui;
+}
+
+void VDSL::on_pushButtonStart_clicked()
+{
+    frame->run();
 }

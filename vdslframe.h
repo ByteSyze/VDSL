@@ -9,6 +9,8 @@ class VDSLFrame : public QFrame
 public:
     explicit VDSLFrame(QWidget *parent = nullptr);
 
+    void run();
+
 private:
 
     void paintEvent(QPaintEvent *event) override;
@@ -16,11 +18,9 @@ private:
     void mouseMoveEvent(QMouseEvent *) override;
     void mousePressEvent(QMouseEvent *) override;
 
-    void keyPressEvent(QKeyEvent *) override;
-
 signals:
 
-    void run(void);
+    void tick(void);
 
 };
 

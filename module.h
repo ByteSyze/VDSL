@@ -15,6 +15,8 @@ public:
     explicit Module(QString name = "", QWidget *parent = nullptr);
     virtual ~Module() override;
 
+    void invalidate();
+
     QString name();
 
 protected:
@@ -26,6 +28,8 @@ protected:
     void unregisterOutput(Output *);
 
     virtual void run() = 0;
+
+    QVBoxLayout *contentLayout;
 
 private:
 
@@ -39,7 +43,6 @@ private:
     QLabel      *moduleLabel;
 
     QHBoxLayout *mainLayout;
-    QLayout     *contentLayout;
 
     QVBoxLayout *inputLayout;
     QVBoxLayout *outputLayout;
@@ -53,7 +56,6 @@ signals:
 public slots:
 
     void onDataReady();
-    void onInit();
 
 };
 
