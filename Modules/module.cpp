@@ -1,6 +1,4 @@
 #include "module.h"
-#include "stringinput.h"
-#include "stringoutput.h"
 
 #include <QDebug>
 

@@ -25,31 +25,41 @@ CONFIG += c++11
 SOURCES += \
         main.cpp \
         vdsl.cpp \
-    input.cpp \
-    output.cpp \
-    port.cpp \
-    connector.cpp \
     vdslframe.cpp \
-    stringoutput.cpp \
-    stringinput.cpp \
-    module.cpp \
-    Modules/concatenate.cpp \
-    Modules/stringprinter.cpp \
-    Modules/stringinputfield.cpp
+    Ports/stringinput.cpp \
+    Ports/stringoutput.cpp \
+    Ports/port.cpp \
+    Ports/connector.cpp \
+    Ports/input.cpp \
+    Ports/output.cpp \
+    Modules/module.cpp \
+    Ports/integerinput.cpp \
+    Ports/integeroutput.cpp \
+    Ports/floatinput.cpp \
+    Ports/floatoutput.cpp \
+    Modules/Math/Float/addfloat.cpp \
+    Modules/String/concatenate.cpp \
+    Modules/String/stringinputfield.cpp \
+    Modules/String/stringprinter.cpp
 
 HEADERS += \
         vdsl.h \
-    input.h \
-    output.h \
-    port.h \
-    connector.h \
     vdslframe.h \
-    stringoutput.h \
-    stringinput.h \
-    module.h \
-    Modules/concatenate.h \
-    Modules/stringprinter.h \
-    Modules/stringinputfield.h
+    Ports/port.h \
+    Ports/stringinput.h \
+    Ports/stringoutput.h \
+    Ports/connector.h \
+    Ports/input.h \
+    Ports/output.h \
+    Modules/module.h \
+    Ports/integerinput.h \
+    Ports/integeroutput.h \
+    Ports/floatinput.h \
+    Ports/floatoutput.h \
+    Modules/Math/Float/addfloat.h \
+    Modules/String/concatenate.h \
+    Modules/String/stringinputfield.h \
+    Modules/String/stringprinter.h
 
 FORMS += \
         vdsl.ui

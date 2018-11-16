@@ -3,9 +3,9 @@
 
 #include "vdslframe.h"
 
-#include "module.h"
-#include "stringoutput.h"
-#include "stringinput.h"
+#include "Modules/module.h"
+#include "Ports/stringinput.h"
+#include "Ports/stringoutput.h"
 
 #include <QPainter>
 

@@ -1,7 +1,7 @@
 #include "vdslframe.h"
 #include "vdsl.h"
-#include "port.h"
-#include "output.h"
+#include "Ports/port.h"
+#include "Ports/output.h"
 #include <QPainter>
 #include <QDebug>
 

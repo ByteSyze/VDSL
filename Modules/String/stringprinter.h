@@ -1,8 +1,8 @@
 #ifndef STRINGPRINTER_H
 #define STRINGPRINTER_H
 
-#include <module.h>
-#include <stringinput.h>
+#include "Modules/module.h"
+#include "Ports/stringinput.h"
 
 class StringPrinter : public Module
 {

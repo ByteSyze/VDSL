@@ -1,9 +1,9 @@
 #ifndef CONCATENATE_H
 #define CONCATENATE_H
 
-#include <module.h>
-#include <stringinput.h>
-#include <stringoutput.h>
+#include "Modules/module.h"
+#include "Ports/stringinput.h"
+#include "Ports/stringoutput.h"
 
 class Concatenate : public Module
 {

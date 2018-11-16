@@ -5,8 +5,8 @@
 #include <QLayout>
 #include <QList>
 #include <QFrame>
-#include "input.h"
-#include "output.h"
+#include "Ports/input.h"
+#include "Ports/output.h"
 
 class Module : public QFrame
 {

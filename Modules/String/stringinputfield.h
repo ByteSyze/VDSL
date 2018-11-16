@@ -1,8 +1,8 @@
 #ifndef STRINGINPUTFIELD_H
 #define STRINGINPUTFIELD_H
 
-#include <module.h>
-#include <stringoutput.h>
+#include "Modules/module.h"
+#include "Ports/stringoutput.h"
 #include <QLineEdit>
 
 class StringInputField : public Module
