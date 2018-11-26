@@ -40,7 +40,12 @@ SOURCES += \
     Modules/Math/Float/addfloat.cpp \
     Modules/String/concatenate.cpp \
     Modules/String/stringinputfield.cpp \
-    Modules/String/stringprinter.cpp
+    Modules/String/stringprinter.cpp \
+    Modules/Convert/stringtofloat.cpp \
+    Modules/Convert/floattostring.cpp \
+    Modules/Math/Float/wavegenerator.cpp \
+    Modules/Visualization/Graph/linegraph.cpp \
+    Modules/Visualization/Graph/linegraphdisplay.cpp
 
 HEADERS += \
         vdsl.h \
@@ -59,7 +64,12 @@ HEADERS += \
     Modules/Math/Float/addfloat.h \
     Modules/String/concatenate.h \
     Modules/String/stringinputfield.h \
-    Modules/String/stringprinter.h
+    Modules/String/stringprinter.h \
+    Modules/Convert/stringtofloat.h \
+    Modules/Convert/floattostring.h \
+    Modules/Math/Float/wavegenerator.h \
+    Modules/Visualization/Graph/linegraph.h \
+    Modules/Visualization/Graph/linegraphdisplay.h
 
 FORMS += \
         vdsl.ui

@@ -3,6 +3,7 @@
 #include "Ports/port.h"
 #include "Ports/output.h"
 #include <QPainter>
+#include <QMimeData>
 #include <QDebug>
 
 VDSLFrame::VDSLFrame(QWidget *parent) : QFrame (parent)
@@ -11,6 +12,8 @@ VDSLFrame::VDSLFrame(QWidget *parent) : QFrame (parent)
     this->setMinimumSize(QSize(1000,1000));
 
     this->setStyleSheet("background:white;");
+
+    this->setAcceptDrops(true);
 }
 
 void VDSLFrame::run()
@@ -29,6 +32,7 @@ void VDSLFrame::paintEvent(QPaintEvent *event)
     painter.setPen(pen);
     painter.setRenderHint(QPainter::Antialiasing, true);
 
+    /* Draw all port connections */
     for(int i = 0; i < outputs.size(); i++)
     {
         Output *output = outputs[i];
@@ -51,6 +55,8 @@ void VDSLFrame::paintEvent(QPaintEvent *event)
             painter.drawPath(path);
         }
     }
+
+    /* Draw a pending connection from the currently selected port to the cursor. */
     if(VDSL::selectedPort != nullptr)
     {
         Port *selected = VDSL::selectedPort;
@@ -82,13 +88,23 @@ void VDSLFrame::mousePressEvent(QMouseEvent *e)
 {
     if(e->button() == Qt::MiddleButton)
     {
-        //this->
+
     }
-    if(VDSL::selectedPort != nullptr)
+    else if(VDSL::selectedPort != nullptr)
     {
         VDSL::selectedPort = nullptr;
         this->update();
     }
+}
+
+void VDSLFrame::dragEnterEvent(QDragEnterEvent *event)
+{
+    event->acceptProposedAction();
+}
+
+void VDSLFrame::dropEvent(QDropEvent *event)
+{
+    qDebug() << event->mimeData()->data("vdsl::createitem");
 }
 
 void VDSLFrame::mouseMoveEvent(QMouseEvent *)

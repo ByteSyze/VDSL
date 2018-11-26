@@ -111,9 +111,10 @@ void Module::mouseMoveEvent(QMouseEvent *)
     }
 }
 
-void Module::mousePressEvent(QMouseEvent *)
+void Module::mousePressEvent(QMouseEvent *event)
 {
-    isBeingDragged = true;
+    if(event->button() == Qt::MouseButton::RightButton)
+        isBeingDragged = true;
 }
 
 void Module::mouseReleaseEvent(QMouseEvent *)
@@ -128,8 +129,8 @@ void Module::onDataReady()
 
     for(it = inputs->begin(); it != inputs->end(); it++)
     {
-        if((*it) == QObject::sender())
-            continue;
+        //if((*it) == QObject::sender())
+        //    continue;
 
         if(!(*it)->isDataReady())
         {

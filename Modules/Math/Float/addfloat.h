@@ -18,10 +18,6 @@ private:
     FloatInput *in1, *in2;
 
     FloatOutput *out;
-
-signals:
-
-public slots:
 };
 
 #endif // ADDFLOAT_H

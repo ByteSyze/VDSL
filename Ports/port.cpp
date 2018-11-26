@@ -7,7 +7,6 @@ Port::Port(QWidget *parent, QString name, Orientation orientation) : QWidget(par
     m_Label     = new QLabel();
     m_Connector = new Connector();
 
-    //this->setMaximumHeight(30);
     setName(name);
 
     m_Orientation = orientation;
