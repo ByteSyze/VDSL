@@ -19,6 +19,8 @@ public:
 
     QString name();
 
+    virtual Module *clone() = 0;
+
 protected:
 
     void registerInput(Input *);

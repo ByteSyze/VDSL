@@ -22,3 +22,8 @@ void LineGraph::run()
 {
     display->addData(in->data());
 }
+
+Module *LineGraph::clone()
+{
+    return new LineGraph;
+}

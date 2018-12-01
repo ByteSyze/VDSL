@@ -21,3 +21,8 @@ void Concatenate::run()
 {
     out->send(in1->data() + " " + in2->data());
 }
+
+Module *Concatenate::clone()
+{
+    return new Concatenate;
+}

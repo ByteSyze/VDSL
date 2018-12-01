@@ -12,6 +12,8 @@ public:
 
     void run();
 
+    Module *clone();
+
 private:
 
     StringInput *in;

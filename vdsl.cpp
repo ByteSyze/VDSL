@@ -2,15 +2,20 @@
 #include "ui_vdsl.h"
 
 #include "vdslframe.h"
+#include "vdslframeoverlay.h"
 
 #include "Modules/module.h"
 #include "Ports/stringinput.h"
 #include "Ports/stringoutput.h"
 
+#include "Modules/moduletreewidgetitem.h"
+
 #include <QPainter>
 #include <QDebug>
 #include <QDrag>
 #include <QMimeData>
+
+#include <QStackedLayout>
 
 #include <Modules/String/stringinputfield.h>
 #include <Modules/String/concatenate.h>
@@ -33,9 +38,18 @@ VDSL::VDSL(QWidget *parent) :
 
     QTime::currentTime().start();
 
-    frame = new VDSLFrame;
+    frameLayout = new QStackedLayout;
+    frameLayout->setStackingMode(QStackedLayout::StackAll);
 
-    ui->scrollArea->setWidget(frame);
+    frame = new VDSLFrame;
+    overlay = new VDSLFrameOverlay;
+
+    overlay->setFrame(frame);
+
+    frameLayout->addWidget(frame);
+    frameLayout->addWidget(overlay);
+
+    ui->scrollArea->setLayout(frameLayout);
 
     StringInputField *field1 = new StringInputField;
     StringInputField *field2 = new StringInputField;
@@ -59,20 +73,24 @@ VDSL::VDSL(QWidget *parent) :
 
     QTreeWidgetItem *convertCat = new QTreeWidgetItem;
     convertCat->setText(0,"Convert");
-    QTreeWidgetItem *ftosItem = new QTreeWidgetItem;
+
+    ModuleTreeWidgetItem *ftosItem = new ModuleTreeWidgetItem;
     ftosItem->setText(0,"Float to String");
-    QTreeWidgetItem *stofItem = new QTreeWidgetItem;
+    ftosItem->setModulePrototype(new FloatToString);
+
+    ModuleTreeWidgetItem *stofItem = new ModuleTreeWidgetItem;
     stofItem->setText(0,"String to Float");
+    stofItem->setModulePrototype(new StringToFloat);
 
     QTreeWidgetItem *mathCat = new QTreeWidgetItem;
     mathCat->setText(0, "Math");
-    QTreeWidgetItem *mathFloatCat = new QTreeWidgetItem;
+
+    ModuleTreeWidgetItem *mathFloatCat = new ModuleTreeWidgetItem;
     mathFloatCat->setText(0, "Float");
-    QTreeWidgetItem *addFloatItem = new QTreeWidgetItem;
+
+    ModuleTreeWidgetItem *addFloatItem = new ModuleTreeWidgetItem;
     addFloatItem->setText(0, "Add Float");
-
-
-    convertCat->setFlags(ftosItem->flags() | Qt::ItemIsDragEnabled);
+    addFloatItem->setModulePrototype(new AddFloat);
 
     convertCat->addChild(ftosItem);
     convertCat->addChild(stofItem);
@@ -109,7 +127,7 @@ VDSL::VDSL(QWidget *parent) :
 
     connect(mainTimer, SIGNAL(timeout()), this, SLOT(tick()));
 
-    mainTimer->start(16);
+    mainTimer->start(16); //Roughly 63 ticks per second
 }
 
 VDSL::~VDSL()
@@ -138,19 +156,30 @@ void VDSL::on_pushButtonStop_clicked()
 
 void VDSL::on_moduleTree_itemPressed(QTreeWidgetItem *item, int column)
 {
-    qDebug() << "item pressed";
+    ModuleTreeWidgetItem *modItem = dynamic_cast<ModuleTreeWidgetItem*>(item);
 
-    QDrag drag(this);
+    if(modItem != nullptr)
+    {
 
-    QMimeData *data = new QMimeData;
-    data->setData("vdsl::createitem", item->text(0).toLocal8Bit());
+        qDebug() << "item pressed";
 
-    drag.setMimeData(data);
+        QDrag drag(modItem->cloneModulePrototype());
 
-    Qt::DropAction action = drag.exec();
+        QMimeData *data = new QMimeData;
+        data->setData("vdsl::createitem", item->text(0).toLocal8Bit());
+
+        drag.setMimeData(data);
+
+        Qt::DropAction action = drag.exec();
+    }
 }
 
 void VDSL::on_moduleTree_itemClicked(QTreeWidgetItem *item, int column)
 {
 
+}
+
+void VDSL::on_sliderSpeedControl_sliderMoved(int position)
+{
+    mainTimer->setInterval(ui->sliderSpeedControl->maximum() - position);
 }

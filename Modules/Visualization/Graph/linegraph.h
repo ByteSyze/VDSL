@@ -15,6 +15,8 @@ public:
 
     void run();
 
+    Module *clone();
+
 private:
 
     FloatInput *in;

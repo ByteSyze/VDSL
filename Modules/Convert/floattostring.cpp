@@ -17,3 +17,8 @@ void FloatToString::run()
 {
     out->send(QString::number(in->data()));
 }
+
+Module *FloatToString::clone()
+{
+    return new FloatToString;
+}

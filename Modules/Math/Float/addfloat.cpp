@@ -21,3 +21,8 @@ void AddFloat::run()
 {
     out->send(in1->data() + in2->data());
 }
+
+Module *AddFloat::clone()
+{
+    return new AddFloat;
+}

@@ -18,3 +18,8 @@ void WaveGenerator::run()
     angle += angularVelocity;
     out->send(sin(angle));
 }
+
+Module *WaveGenerator::clone()
+{
+    return new WaveGenerator;
+}

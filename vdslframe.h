@@ -1,7 +1,8 @@
 #ifndef VDSLFRAME_H
 #define VDSLFRAME_H
 
-#include <QFrame>
+#include <QStackedWidget>
+#include <Modules/module.h>
 
 class VDSLFrame : public QFrame
 {
@@ -11,15 +12,26 @@ public:
 
     void run();
 
+    QPoint userSelectionP1();
+    QPoint userSelectionP2();
+
+    bool   isUserSelecting();
+
 private:
 
-    void paintEvent(QPaintEvent *event) override;
+    bool m_isUserSelecting = false;
+    QPoint selectionP1, selectionP2;
 
-    void mouseMoveEvent(QMouseEvent *) override;
-    void mousePressEvent(QMouseEvent *) override;
+    QList<Module *> *selectedModules;
+
+   // void paintEvent(QPaintEvent *event)    override;
+
+    void mouseMoveEvent(QMouseEvent *)     override;
+    void mousePressEvent(QMouseEvent *)    override;
+    void mouseReleaseEvent(QMouseEvent *)  override;
 
     void dragEnterEvent(QDragEnterEvent *) override;
-    void dropEvent(QDropEvent *) override;
+    void dropEvent(QDropEvent *)           override;
 
 signals:
 

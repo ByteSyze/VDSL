@@ -2,9 +2,12 @@
 #define VDSL_H
 
 #include <QMainWindow>
+#include <QStackedLayout>
 #include <QTreeWidgetItem>
 #include <QTimer>
+
 #include "vdslframe.h"
+#include "vdslframeoverlay.h"
 
 class Port;
 class Module;
@@ -26,7 +29,10 @@ public:
 
 private:
 
-    VDSLFrame *frame;
+    VDSLFrame        *frame;
+    VDSLFrameOverlay *overlay;
+
+    QStackedLayout   *frameLayout;
 
     bool isRunning = false;
 
@@ -42,6 +48,8 @@ private slots:
     void on_moduleTree_itemPressed(QTreeWidgetItem *item, int column);
 
     void on_moduleTree_itemClicked(QTreeWidgetItem *item, int column);
+
+    void on_sliderSpeedControl_sliderMoved(int position);
 
 private:
     Ui::VDSL *ui;

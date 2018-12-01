@@ -45,7 +45,9 @@ SOURCES += \
     Modules/Convert/floattostring.cpp \
     Modules/Math/Float/wavegenerator.cpp \
     Modules/Visualization/Graph/linegraph.cpp \
-    Modules/Visualization/Graph/linegraphdisplay.cpp
+    Modules/Visualization/Graph/linegraphdisplay.cpp \
+    Modules/moduletreewidgetitem.cpp \
+    vdslframeoverlay.cpp
 
 HEADERS += \
         vdsl.h \
@@ -69,7 +71,9 @@ HEADERS += \
     Modules/Convert/floattostring.h \
     Modules/Math/Float/wavegenerator.h \
     Modules/Visualization/Graph/linegraph.h \
-    Modules/Visualization/Graph/linegraphdisplay.h
+    Modules/Visualization/Graph/linegraphdisplay.h \
+    Modules/moduletreewidgetitem.h \
+    vdslframeoverlay.h
 
 FORMS += \
         vdsl.ui

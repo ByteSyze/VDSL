@@ -17,3 +17,8 @@ void StringToFloat::run()
 {
     out->send(in->data().toFloat());
 }
+
+Module *StringToFloat::clone()
+{
+    return new StringToFloat;
+}

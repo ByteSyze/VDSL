@@ -21,79 +21,58 @@ void VDSLFrame::run()
     emit tick();
 }
 
-void VDSLFrame::paintEvent(QPaintEvent *event)
+bool VDSLFrame::isUserSelecting()
 {
-    QList<Output *> outputs = findChildren<Output *>();
+    return m_isUserSelecting;
+}
 
-    QPainter painter(this);
-    QBrush brush(QColor(128,128,128),Qt::BrushStyle::SolidPattern);
-    QPen pen(brush,2.5,Qt::PenStyle::SolidLine,Qt::PenCapStyle::RoundCap);
+QPoint VDSLFrame::userSelectionP1()
+{
+    return selectionP1;
+}
 
-    painter.setPen(pen);
-    painter.setRenderHint(QPainter::Antialiasing, true);
-
-    /* Draw all port connections */
-    for(int i = 0; i < outputs.size(); i++)
-    {
-        Output *output = outputs[i];
-        QList<Port *> *connected = output->getConnected();
-
-        for(int j = 0; j < connected->size(); j++)
-        {
-            Port *p = (*connected)[j];
-
-            QPoint start = output->mapTo(this,output->connectorPos());
-            QPoint end   = p->mapTo(this, p->connectorPos());
-
-            QPoint c1(start.x()+100,start.y());
-            QPoint c2(end.x()-100,end.y());
-
-            QPainterPath path;
-            path.moveTo(start);
-            path.cubicTo(c1,c2,end);
-
-            painter.drawPath(path);
-        }
-    }
-
-    /* Draw a pending connection from the currently selected port to the cursor. */
-    if(VDSL::selectedPort != nullptr)
-    {
-        Port *selected = VDSL::selectedPort;
-
-        QPoint start = selected->mapTo(this,selected->connectorPos());
-        QPoint end   = mapFromGlobal(QCursor::pos());
-
-        Port::Orientation o = VDSL::selectedPort->orientation();
-        int dir = (o == Port::Orientation::left) ? -1 : 1;
-        QPoint c1(start.x()+100*dir,start.y());
-        QPoint c2(end.x()-100*dir,end.y());
-
-        QPainterPath path;
-        path.moveTo(start);
-        path.cubicTo(c1,c2,end);
-
-        pen.setStyle(Qt::PenStyle::DotLine);
-        painter.setPen(pen);
-
-        painter.drawPath(path);
-    }
-    else
-    {
-        QFrame::paintEvent(event);
-    }
+QPoint VDSLFrame::userSelectionP2()
+{
+    return selectionP2;
 }
 
 void VDSLFrame::mousePressEvent(QMouseEvent *e)
 {
-    if(e->button() == Qt::MiddleButton)
+    if(e->button() == Qt::LeftButton)
+    {
+        m_isUserSelecting = true;
+        selectionP1 = e->pos();
+    }
+    else if(e->button() == Qt::MiddleButton)
     {
 
     }
     else if(VDSL::selectedPort != nullptr)
     {
         VDSL::selectedPort = nullptr;
-        this->update();
+        update();
+    }
+}
+
+void VDSLFrame::mouseReleaseEvent(QMouseEvent *)
+{
+    if(isUserSelecting())
+    {
+        m_isUserSelecting = false;
+        update();
+    }
+}
+
+void VDSLFrame::mouseMoveEvent(QMouseEvent *e)
+{
+    if(isUserSelecting())
+    {
+        selectionP2 = e->pos();
+        update();
+    }
+    else if(VDSL::selectedPort != nullptr)
+    {
+        update();
     }
 }
 
@@ -104,12 +83,15 @@ void VDSLFrame::dragEnterEvent(QDragEnterEvent *event)
 
 void VDSLFrame::dropEvent(QDropEvent *event)
 {
-    qDebug() << event->mimeData()->data("vdsl::createitem");
-}
+    if(event->mimeData()->data("vdsl::createitem") != nullptr)
+    {
+        QWidget *sourceWidget = qobject_cast<QWidget *>(event->source());
 
-void VDSLFrame::mouseMoveEvent(QMouseEvent *)
-{
-
-    if(VDSL::selectedPort != nullptr)
-        this->update();
+        if(sourceWidget != nullptr)
+        {
+            sourceWidget->setParent(this);
+            sourceWidget->move(event->pos());
+            sourceWidget->show();
+        }
+    }
 }

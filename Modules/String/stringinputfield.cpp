@@ -16,3 +16,8 @@ void StringInputField::run()
 {
     out->send(inputField->text());
 }
+
+Module *StringInputField::clone()
+{
+    return new StringInputField;
+}

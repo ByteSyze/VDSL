@@ -16,3 +16,8 @@ void StringPrinter::run()
 {
     display->setText("\"" + in->data() + "\"");
 }
+
+Module *StringPrinter::clone()
+{
+    return new StringPrinter;
+}
