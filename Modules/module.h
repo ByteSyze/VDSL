@@ -12,12 +12,21 @@ class Module : public QFrame
 {
     Q_OBJECT
 public:
-    explicit Module(QString name = "", QWidget *parent = nullptr);
+
+    enum class ModuleType
+    {
+        emitter, //Emitter modules are the starting points in the program.
+        dataDependent //Data dependent modules need data before they can emit.
+    };
+
+    explicit Module(QString name = "", QWidget *parent = nullptr, ModuleType type = ModuleType::dataDependent);
     virtual ~Module() override;
 
     void invalidate();
 
     QString name();
+
+    ModuleType type();
 
     virtual Module *clone() = 0;
 
@@ -50,6 +59,8 @@ private:
     QVBoxLayout *outputLayout;
 
     QString m_Name;
+
+    ModuleType m_Type;
 
     bool isBeingDragged = false;
 

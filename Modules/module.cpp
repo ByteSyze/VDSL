@@ -2,7 +2,7 @@
 
 #include <QDebug>
 
-Module::Module(QString name, QWidget *parent) : QFrame(parent)
+Module::Module(QString name, QWidget *parent, Module::ModuleType type) : QFrame(parent)
 {
     inputs  = new QList<Input *>;
     outputs = new QList<Output *>;
@@ -15,7 +15,10 @@ Module::Module(QString name, QWidget *parent) : QFrame(parent)
 
     m_Name = name;
 
+    m_Type = type;
+
     moduleLabel  = new QLabel(name);
+    moduleLabel->setAlignment(Qt::AlignHCenter);
 
     contentLayout->addWidget(moduleLabel);
 
@@ -55,6 +58,11 @@ void Module::invalidate()
 QString Module::name()
 {
     return m_Name;
+}
+
+Module::ModuleType Module::type()
+{
+    return m_Type;
 }
 
 void Module::registerInput(Input *input)

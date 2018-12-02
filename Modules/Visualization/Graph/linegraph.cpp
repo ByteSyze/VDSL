@@ -3,7 +3,7 @@
 LineGraph::LineGraph(QWidget *parent) : Module("Line Graph", parent)
 {
     display = new LineGraphDisplay(32, this);
-    display->setMinimumSize(320,240);
+    display->setMinimumSize(380,240);
 
     contentLayout->addWidget(display);
 

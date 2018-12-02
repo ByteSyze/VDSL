@@ -80,7 +80,6 @@ void VDSLFrameOverlay::paintEvent(QPaintEvent *)
     {
         QPoint p1 = frame->userSelectionP1();
         QPoint p2 = frame->userSelectionP2();
-        qDebug() << "user is selecting: " << p1 << p2;
 
         QPoint topLeft, botRight;
 
@@ -89,8 +88,6 @@ void VDSLFrameOverlay::paintEvent(QPaintEvent *)
 
         botRight.setX((p1.x() > p2.x()) ? p1.x() : p2.x());
         botRight.setY((p1.y() < p2.y()) ? p1.y() : p2.y());
-
-        qDebug() << "top left: " << topLeft << "Bot right: " << botRight;
 
         QRect selectionArea(topLeft, botRight);
 

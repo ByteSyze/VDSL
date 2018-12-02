@@ -27,6 +27,9 @@ public:
     static Port*   selectedPort;
     static Module* selectedModule;
 
+    void initializeModuleTree();
+    void addToModuleTree(QTreeWidgetItem *);
+
 private:
 
     VDSLFrame        *frame;

@@ -24,7 +24,7 @@ private:
 
     QList<Module *> *selectedModules;
 
-   // void paintEvent(QPaintEvent *event)    override;
+    void invalidateModules();
 
     void mouseMoveEvent(QMouseEvent *)     override;
     void mousePressEvent(QMouseEvent *)    override;

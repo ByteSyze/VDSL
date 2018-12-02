@@ -1,6 +1,6 @@
 #include "stringinputfield.h"
 
-StringInputField::StringInputField(QWidget *parent) : Module("String Input", parent)
+StringInputField::StringInputField(QWidget *parent) : Module("String Input", parent, ModuleType::emitter)
 {
     out = new StringOutput;
     out->setName("Output");

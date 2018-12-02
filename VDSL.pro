@@ -47,7 +47,9 @@ SOURCES += \
     Modules/Visualization/Graph/linegraph.cpp \
     Modules/Visualization/Graph/linegraphdisplay.cpp \
     Modules/moduletreewidgetitem.cpp \
-    vdslframeoverlay.cpp
+    vdslframeoverlay.cpp \
+    Modules/Math/Float/multiplyfloat.cpp \
+    Modules/Math/Float/roundfloat.cpp
 
 HEADERS += \
         vdsl.h \
@@ -73,7 +75,9 @@ HEADERS += \
     Modules/Visualization/Graph/linegraph.h \
     Modules/Visualization/Graph/linegraphdisplay.h \
     Modules/moduletreewidgetitem.h \
-    vdslframeoverlay.h
+    vdslframeoverlay.h \
+    Modules/Math/Float/multiplyfloat.h \
+    Modules/Math/Float/roundfloat.h
 
 FORMS += \
         vdsl.ui

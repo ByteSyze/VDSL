@@ -1,6 +1,6 @@
 #include "wavegenerator.h"
 
-WaveGenerator::WaveGenerator(QWidget *parent) : Module("Wave Generator", parent)
+WaveGenerator::WaveGenerator(QWidget *parent) : Module("Wave Generator", parent, ModuleType::emitter)
 {
     out = new FloatOutput;
     out->setName("Output");

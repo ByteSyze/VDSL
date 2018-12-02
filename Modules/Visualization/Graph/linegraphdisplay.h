@@ -7,7 +7,7 @@ class LineGraphDisplay : public QWidget
 {
     Q_OBJECT
 public:
-    explicit LineGraphDisplay(uint32_t maxDataSize=256, QWidget *parent = nullptr);
+    explicit LineGraphDisplay(uint32_t maxBufferSize=256, QWidget *parent = nullptr);
     ~LineGraphDisplay();
 
     void addData(float data);
@@ -18,7 +18,7 @@ protected:
 
 private:
 
-    uint32_t maxDataSize;
+    uint32_t maxBufferSize;
 
     QList<float> *graphData;
 

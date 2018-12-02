@@ -10,23 +10,26 @@
 
 #include "Modules/moduletreewidgetitem.h"
 
-#include <QPainter>
-#include <QDebug>
-#include <QDrag>
-#include <QMimeData>
-
-#include <QStackedLayout>
-
 #include <Modules/String/stringinputfield.h>
 #include <Modules/String/concatenate.h>
 #include <Modules/String/stringprinter.h>
 
 #include <Modules/Math/Float/addfloat.h>
+#include <Modules/Math/Float/multiplyfloat.h>
+#include <Modules/Math/Float/roundfloat.h>
 #include <Modules/Math/Float/wavegenerator.h>
 #include <Modules/Convert/stringtofloat.h>
 #include <Modules/Convert/floattostring.h>
 
 #include <Modules/Visualization/Graph/linegraph.h>
+
+#include <QPainter>
+#include <QDebug>
+
+#include <QDrag>
+#include <QMimeData>
+
+#include <QStackedLayout>
 
 Port* VDSL::selectedPort = nullptr;
 
@@ -36,7 +39,7 @@ VDSL::VDSL(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    QTime::currentTime().start();
+    initializeModuleTree();
 
     frameLayout = new QStackedLayout;
     frameLayout->setStackingMode(QStackedLayout::StackAll);
@@ -51,25 +54,25 @@ VDSL::VDSL(QWidget *parent) :
 
     ui->scrollArea->setLayout(frameLayout);
 
-    StringInputField *field1 = new StringInputField;
-    StringInputField *field2 = new StringInputField;
+    mainTimer = new QTimer(this);
 
-    WaveGenerator *wavgen    = new WaveGenerator;
+    connect(mainTimer, SIGNAL(timeout()), this, SLOT(tick()));
 
-    connect(frame, SIGNAL(tick()), field1, SLOT(onDataReady()));
-    connect(frame, SIGNAL(tick()), field2, SLOT(onDataReady()));
-    connect(frame, SIGNAL(tick()), wavgen, SLOT(onDataReady()));
+    mainTimer->start(16); //Roughly 63 ticks per second
+}
 
-    Concatenate   *concat    = new Concatenate;
+VDSL::~VDSL()
+{
+    mainTimer->deleteLater();
+    delete ui;
+}
 
-    AddFloat      *addfl     = new AddFloat;
+void VDSL::initializeModuleTree()
+{
+    ui->moduleTree->headerItem()->setText(0,"Modules");
+    ui->moduleTree->setColumnCount(1);
 
-    StringToFloat *stof1     = new StringToFloat;
-    StringToFloat *stof2     = new StringToFloat;
-
-    FloatToString *ftos      = new FloatToString;
-
-    LineGraph     *graph     = new LineGraph;
+    //// Data Conversion category ////
 
     QTreeWidgetItem *convertCat = new QTreeWidgetItem;
     convertCat->setText(0,"Convert");
@@ -82,58 +85,86 @@ VDSL::VDSL(QWidget *parent) :
     stofItem->setText(0,"String to Float");
     stofItem->setModulePrototype(new StringToFloat);
 
-    QTreeWidgetItem *mathCat = new QTreeWidgetItem;
-    mathCat->setText(0, "Math");
-
-    ModuleTreeWidgetItem *mathFloatCat = new ModuleTreeWidgetItem;
-    mathFloatCat->setText(0, "Float");
-
-    ModuleTreeWidgetItem *addFloatItem = new ModuleTreeWidgetItem;
-    addFloatItem->setText(0, "Add Float");
-    addFloatItem->setModulePrototype(new AddFloat);
-
     convertCat->addChild(ftosItem);
     convertCat->addChild(stofItem);
 
+    //// Math category ////
+
+    QTreeWidgetItem *mathCat = new QTreeWidgetItem;
+    mathCat->setText(0, "Math");
+
+    /// Float sub-category ///
+
+    QTreeWidgetItem *mathFloatCat = new QTreeWidgetItem;
+    mathFloatCat->setText(0, "Float");
+
+    ModuleTreeWidgetItem *addFloatItem = new ModuleTreeWidgetItem;
+    addFloatItem->setText(0, "Add");
+    addFloatItem->setModulePrototype(new AddFloat);
+
+    ModuleTreeWidgetItem *roundFloatItem = new ModuleTreeWidgetItem;
+    roundFloatItem->setText(0, "Round");
+    roundFloatItem->setModulePrototype(new RoundFloat);
+
+    ModuleTreeWidgetItem *multiplyFloatItem = new ModuleTreeWidgetItem;
+    multiplyFloatItem->setText(0, "Multiply");
+    multiplyFloatItem->setModulePrototype(new MultiplyFloat);
+
+    ModuleTreeWidgetItem *waveGenItem = new ModuleTreeWidgetItem;
+    waveGenItem->setText(0, "Wave Generator");
+    waveGenItem->setModulePrototype(new WaveGenerator);
+
     mathCat->addChild(mathFloatCat);
     mathFloatCat->addChild(addFloatItem);
+    mathFloatCat->addChild(multiplyFloatItem);
+    mathFloatCat->addChild(roundFloatItem);
+    mathFloatCat->addChild(waveGenItem);
 
-    ui->moduleTree->headerItem()->setText(0,"Modules");
-    ui->moduleTree->setColumnCount(1);
-    ui->moduleTree->addTopLevelItem(convertCat);
-    ui->moduleTree->addTopLevelItem(mathCat);
+    //// String category ////
 
-    StringPrinter *printer   = new StringPrinter;
+    QTreeWidgetItem *stringCat = new QTreeWidgetItem;
+    stringCat->setText(0, "String");
 
-    field1->setParent(frame);
-    field2->setParent(frame);
+    ModuleTreeWidgetItem *concatItem = new ModuleTreeWidgetItem;
+    concatItem->setText(0, "Concatenate");
+    concatItem->setModulePrototype(new Concatenate);
 
-    concat->setParent(frame);
+    ModuleTreeWidgetItem *sifItem = new ModuleTreeWidgetItem;
+    sifItem->setText(0, "Input Field");
+    sifItem->setModulePrototype(new StringInputField);
 
-    addfl->setParent(frame);
+    ModuleTreeWidgetItem *sprinterItem = new ModuleTreeWidgetItem;
+    sprinterItem->setText(0, "Printer");
+    sprinterItem->setModulePrototype(new StringPrinter);
 
-    wavgen->setParent(frame);
+    stringCat->addChild(concatItem);
+    stringCat->addChild(sifItem);
+    stringCat->addChild(sprinterItem);
 
-    stof1->setParent(frame);
-    stof2->setParent(frame);
+    //// Data visualization /////
 
-    ftos->setParent(frame);
+    /// Graphs ///
 
-    printer->setParent(frame);
+    QTreeWidgetItem *graphCat = new QTreeWidgetItem;
+    graphCat->setText(0, "Graph");
 
-    graph->setParent(frame);
+    ModuleTreeWidgetItem *lineGraphItem = new ModuleTreeWidgetItem;
+    lineGraphItem->setText(0, "Line Graph");
+    lineGraphItem->setModulePrototype(new LineGraph);
 
-    mainTimer = new QTimer(this);
+    graphCat->addChild(lineGraphItem);
 
-    connect(mainTimer, SIGNAL(timeout()), this, SLOT(tick()));
+    //// Add top-level items to module tree ////
 
-    mainTimer->start(16); //Roughly 63 ticks per second
+    addToModuleTree(convertCat);
+    addToModuleTree(mathCat);
+    addToModuleTree(stringCat);
+    addToModuleTree(graphCat);
 }
 
-VDSL::~VDSL()
+void VDSL::addToModuleTree(QTreeWidgetItem *treeItem)
 {
-    mainTimer->deleteLater();
-    delete ui;
+    ui->moduleTree->addTopLevelItem(treeItem);
 }
 
 void VDSL::tick()
@@ -160,9 +191,6 @@ void VDSL::on_moduleTree_itemPressed(QTreeWidgetItem *item, int column)
 
     if(modItem != nullptr)
     {
-
-        qDebug() << "item pressed";
-
         QDrag drag(modItem->cloneModulePrototype());
 
         QMimeData *data = new QMimeData;

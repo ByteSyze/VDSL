@@ -18,7 +18,20 @@ VDSLFrame::VDSLFrame(QWidget *parent) : QFrame (parent)
 
 void VDSLFrame::run()
 {
+    invalidateModules();
+
     emit tick();
+}
+
+void VDSLFrame::invalidateModules()
+{
+    QList<Module *> modules = findChildren<Module *>();
+    QList<Module *>::iterator it;
+
+    for(it = modules.begin(); it != modules.end(); it++)
+    {
+        (*it)->invalidate();
+    }
 }
 
 bool VDSLFrame::isUserSelecting()
@@ -78,20 +91,28 @@ void VDSLFrame::mouseMoveEvent(QMouseEvent *e)
 
 void VDSLFrame::dragEnterEvent(QDragEnterEvent *event)
 {
-    event->acceptProposedAction();
+    if(event->mimeData()->data("vdsl::createitem") != nullptr)
+    {
+        event->acceptProposedAction();
+    }
 }
 
 void VDSLFrame::dropEvent(QDropEvent *event)
 {
     if(event->mimeData()->data("vdsl::createitem") != nullptr)
     {
-        QWidget *sourceWidget = qobject_cast<QWidget *>(event->source());
+        Module *sourceModule = qobject_cast<Module *>(event->source());
 
-        if(sourceWidget != nullptr)
+        if(sourceModule != nullptr)
         {
-            sourceWidget->setParent(this);
-            sourceWidget->move(event->pos());
-            sourceWidget->show();
+            if(sourceModule->type() == Module::ModuleType::emitter)
+            {
+                connect(this, SIGNAL(tick()), sourceModule, SLOT(onDataReady()));
+            }
+
+            sourceModule->setParent(this);
+            sourceModule->move(event->pos());
+            sourceModule->show();
         }
     }
 }
