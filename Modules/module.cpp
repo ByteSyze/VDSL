@@ -35,14 +35,17 @@ Module::Module(QString name, QWidget *parent, Module::ModuleType type) : QFrame(
 
 Module::~Module()
 {
-    delete inputs;
-    delete outputs;
+    disconnectInputs();
+    disconnectOutputs();
 
     moduleLabel->deleteLater();
 
     mainLayout->deleteLater();
     inputLayout->deleteLater();
     outputLayout->deleteLater();
+
+    delete inputs;
+    delete outputs;
 }
 
 void Module::invalidate()
@@ -74,7 +77,7 @@ void Module::registerInput(Input *input)
         inputLayout->addWidget(input);
         inputLayout->setAlignment(input, Qt::AlignVCenter);
 
-        connect(input,SIGNAL(dataReady()),this,SLOT(onDataReady()));
+        connect(input, SIGNAL(dataReady()), this, SLOT(onDataReady()));
     }
 }
 
@@ -85,7 +88,7 @@ void Module::unregisterInput(Input *input)
         inputs->removeOne(input);
         inputLayout->removeWidget(input);
 
-        disconnect(input,SIGNAL(dataReady(Input*)),this,SLOT(onDataReady(Input*)));
+        disconnect(input, SIGNAL(dataReady(Input*)), this, SLOT(onDataReady(Input*)));
     }
 }
 
@@ -104,6 +107,27 @@ void Module::unregisterOutput(Output *output)
 {
     outputs->removeOne(output);
     outputLayout->removeWidget(output);
+}
+
+void Module::disconnectInputs()
+{
+    QList<Input *>::iterator it;
+
+    for(it = inputs->begin(); it != inputs->end(); it++)
+    {
+        (*it)->disconnect();
+    }
+}
+
+
+void Module::disconnectOutputs()
+{
+    QList<Output *>::iterator it;
+
+    for(it = outputs->begin(); it != outputs->end(); it++)
+    {
+        (*it)->disconnect();
+    }
 }
 
 void Module::mouseMoveEvent(QMouseEvent *)
@@ -137,9 +161,6 @@ void Module::onDataReady()
 
     for(it = inputs->begin(); it != inputs->end(); it++)
     {
-        //if((*it) == QObject::sender())
-        //    continue;
-
         if(!(*it)->isDataReady())
         {
             allDataReady = false;

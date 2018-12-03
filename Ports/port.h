@@ -32,6 +32,7 @@ public:
     Orientation orientation();
 
     bool connectTo(Port *port);
+    bool disconnectFrom(Port *port);
 
     virtual Type type() const = 0;
     virtual bool isConnected(Port *) = 0;

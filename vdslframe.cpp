@@ -9,9 +9,8 @@
 VDSLFrame::VDSLFrame(QWidget *parent) : QFrame (parent)
 {
     this->setMouseTracking(true);
-    this->setMinimumSize(QSize(1000,1000));
 
-    this->setStyleSheet("background:white;");
+    this->setStyleSheet("VDSLFrame{ background:black; } Module{ background:white; }");
 
     this->setAcceptDrops(true);
 }
@@ -36,7 +35,41 @@ void VDSLFrame::invalidateModules()
 
 bool VDSLFrame::isUserSelecting()
 {
-    return m_isUserSelecting;
+    return m_IsUserSelecting;
+}
+
+bool VDSLFrame::isUserDragging()
+{
+    return m_IsUserDragging;
+}
+
+void VDSLFrame::selectModules(QRect bounds)
+{
+    deselectModules();
+
+    QList<Module *> modules = findChildren<Module *>();
+    QList<Module *>::iterator it;
+
+    for(it = modules.begin(); it != modules.end(); it++)
+    {
+        if(bounds.contains((*it)->geometry().center()))
+        {
+            (*it)->setStyleSheet("color:rgb(64, 210, 64)");
+            VDSL::selectedModules->append(*it);
+        }
+    }
+}
+
+void VDSLFrame::deselectModules()
+{
+    QList<Module *>::iterator it;
+
+    for(it = VDSL::selectedModules->begin(); it != VDSL::selectedModules->end(); it++)
+    {
+        (*it)->setStyleSheet("color:#000000");
+    }
+
+    VDSL::selectedModules->clear();
 }
 
 QPoint VDSLFrame::userSelectionP1()
@@ -51,9 +84,23 @@ QPoint VDSLFrame::userSelectionP2()
 
 void VDSLFrame::mousePressEvent(QMouseEvent *e)
 {
+    if(e->button() == Qt::RightButton)
+    {
+        if(isUserSelecting())
+        {
+             // Cancel selection
+            m_IsUserSelecting = false;
+            selectionP1 = selectionP2;
+        }
+        else
+        {
+            m_IsUserDragging = true;
+            dragAnchor = e->pos();
+        }
+    }
     if(e->button() == Qt::LeftButton)
     {
-        m_isUserSelecting = true;
+        m_IsUserSelecting = true;
         selectionP1 = e->pos();
     }
     else if(e->button() == Qt::MiddleButton)
@@ -67,13 +114,32 @@ void VDSLFrame::mousePressEvent(QMouseEvent *e)
     }
 }
 
-void VDSLFrame::mouseReleaseEvent(QMouseEvent *)
+void VDSLFrame::mouseReleaseEvent(QMouseEvent *e)
 {
     if(isUserSelecting())
     {
-        m_isUserSelecting = false;
-        update();
+        m_IsUserSelecting = false;
+
+        QPoint topLeft, botRight;
+
+        topLeft.setX((selectionP1.x() < selectionP2.x()) ? selectionP1.x() : selectionP2.x());
+        topLeft.setY((selectionP1.y() > selectionP2.y()) ? selectionP1.y() : selectionP2.y());
+
+        botRight.setX((selectionP1.x() > selectionP2.x()) ? selectionP1.x() : selectionP2.x());
+        botRight.setY((selectionP1.y() < selectionP2.y()) ? selectionP1.y() : selectionP2.y());
+
+        selectModules(QRect(topLeft, botRight));
     }
+    else if(isUserDragging())
+    {
+        m_IsUserDragging = false;
+    }
+    else
+    {
+        deselectModules();
+    }
+
+    update();
 }
 
 void VDSLFrame::mouseMoveEvent(QMouseEvent *e)
@@ -81,6 +147,18 @@ void VDSLFrame::mouseMoveEvent(QMouseEvent *e)
     if(isUserSelecting())
     {
         selectionP2 = e->pos();
+        update();
+    }
+    else if(isUserDragging())
+    {
+        QList<Module *>::iterator it;
+
+        for(it = VDSL::selectedModules->begin(); it != VDSL::selectedModules->end(); it++)
+        {
+            (*it)->move((*it)->pos() + (e->pos() - dragAnchor));
+        }
+
+        dragAnchor = mapFromGlobal(QCursor::pos());
         update();
     }
     else if(VDSL::selectedPort != nullptr)

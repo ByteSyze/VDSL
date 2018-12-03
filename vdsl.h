@@ -25,7 +25,8 @@ public:
     ~VDSL();
 
     static Port*   selectedPort;
-    static Module* selectedModule;
+
+    static QList<Module *>* selectedModules;
 
     void initializeModuleTree();
     void addToModuleTree(QTreeWidgetItem *);
@@ -47,6 +48,8 @@ private slots:
     void on_pushButtonStop_clicked();
 
     void tick();
+
+    void keyPressEvent(QKeyEvent *) override;
 
     void on_moduleTree_itemPressed(QTreeWidgetItem *item, int column);
 

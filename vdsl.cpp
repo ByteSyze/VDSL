@@ -31,7 +31,9 @@
 
 #include <QStackedLayout>
 
-Port* VDSL::selectedPort = nullptr;
+Port* VDSL::selectedPort                = nullptr;
+
+QList<Module *>* VDSL::selectedModules  = new QList<Module *>;
 
 VDSL::VDSL(QWidget *parent) :
     QMainWindow(parent),
@@ -48,6 +50,9 @@ VDSL::VDSL(QWidget *parent) :
     overlay = new VDSLFrameOverlay;
 
     overlay->setFrame(frame);
+
+    overlay->setMinimumSize(QSize(10000,10000));
+    frame->setMinimumSize(QSize(10000,10000));
 
     frameLayout->addWidget(frame);
     frameLayout->addWidget(overlay);
@@ -172,6 +177,24 @@ void VDSL::tick()
     if(isRunning)
     {
         frame->run();
+    }
+}
+
+void VDSL::keyPressEvent(QKeyEvent *e)
+{
+    if(e->key() == Qt::Key_Delete && !VDSL::selectedModules->isEmpty())
+    {
+        // Delete selected modules.
+        QList<Module *>::iterator it;
+
+        for(it = VDSL::selectedModules->begin(); it != VDSL::selectedModules->end(); it++)
+        {
+            (*it)->deleteLater();
+        }
+
+        VDSL::selectedModules->clear();
+
+        frame->update();
     }
 }
 

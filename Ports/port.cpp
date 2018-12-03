@@ -67,8 +67,33 @@ bool Port::connectTo(Port *port)
     {
         this->onConnect(port);
         port->onConnect(this);
+    }
 
-        //TODO emit connection signal and remove onConnect()
+    return successful;
+}
+
+bool Port::disconnectFrom(Port *port)
+{
+    bool successful = false;
+
+    if(port->type() == this->type())
+        return successful;
+    if(!port->isConnected(this))
+        return successful;
+
+    if(this->type() == Type::input)
+    {
+        successful = disconnect(port, port->interface(), this, this->interface());
+    }
+    else
+    {
+        successful = disconnect(this, this->interface(), port, port->interface());
+    }
+
+    if(successful)
+    {
+        this->onDisconnect(port);
+        port->onDisconnect(this);
     }
 
     return successful;
@@ -87,7 +112,17 @@ void Port::onConnectorClicked()
     }
     else
     {
-        bool success = connectTo(VDSL::selectedPort);
+        bool success;
+
+        if(this->isConnected(VDSL::selectedPort))
+        {
+            qDebug() << "is connected";
+            success = disconnectFrom(VDSL::selectedPort);
+        }
+        else
+        {
+            success = connectTo(VDSL::selectedPort);
+        }
 
         qDebug() << success;
     }

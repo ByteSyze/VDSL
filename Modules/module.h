@@ -44,6 +44,9 @@ protected:
 
 private:
 
+    void disconnectInputs();
+    void disconnectOutputs();
+
     void mouseMoveEvent(QMouseEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;

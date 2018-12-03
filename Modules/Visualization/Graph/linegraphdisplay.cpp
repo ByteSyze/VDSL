@@ -24,26 +24,28 @@ void LineGraphDisplay::addData(float data)
 
 void LineGraphDisplay::paintEvent(QPaintEvent* e)
 {
+    QPainter *painter = new QPainter(this);
+    painter->setPen(Qt::black);
+
+    painter->drawRect(60, 0, width()-61, height()-1);
+
     if(graphData->size() > 1)
     {
-        QPainter *painter = new QPainter(this);
-        painter->setPen(Qt::black);
-
-        /*Graph maximum and minimum values for scaling purposes.*/
+        /*Grab maximum and minimum values for scaling purposes.*/
         float maxData = *std::max_element(graphData->begin(), graphData->end());
         float minData = *std::min_element(graphData->begin(), graphData->end());
 
         float graphHeight = height();
 
         float xScale = (width()-60)/graphData->size();
-        float yScale = graphHeight/(maxData-minData)-1;
+        float yScale = graphHeight/(maxData-minData);
 
         for(int i = 1; i < 5; i++)
         {
-            QLine valueMarker(width()-60, graphHeight/5 * i, width()-30, graphHeight/5 * i);
+            QLine valueMarker(60, graphHeight/5 * i, 75, graphHeight/5 * i);
             painter->drawLine(valueMarker);
 
-            painter->drawText(width()-50, graphHeight/5 * i - 1, QString::number(minData + ((maxData-minData)/5 * (5-i))));
+            painter->drawText(QRect(0, graphHeight/5 * i - 6,60,15), Qt::AlignRight, QString::asprintf("%.3f", minData + ((maxData-minData)/5 * (5-i))));
         }
 
         int index = 0;
@@ -53,7 +55,7 @@ void LineGraphDisplay::paintEvent(QPaintEvent* e)
 
         do
         {
-            QLine line = QLine(index*xScale, graphHeight - (*(p1) - minData)*yScale, (index+1)*xScale, graphHeight - (*(p2) - minData)*yScale);
+            QLine line = QLine(60 + index*xScale, graphHeight - (*(p1) - minData)*yScale, 60 + (index+1)*xScale, graphHeight - (*(p2) - minData)*yScale);
             painter->drawLine(line);
 
             p1 = p2;

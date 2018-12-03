@@ -16,13 +16,20 @@ public:
     QPoint userSelectionP2();
 
     bool   isUserSelecting();
+    bool   isUserDragging();
 
 private:
 
-    bool m_isUserSelecting = false;
+    bool m_IsUserSelecting = false;
     QPoint selectionP1, selectionP2;
 
     QList<Module *> *selectedModules;
+
+    bool m_IsUserDragging = false;
+    QPoint dragAnchor;
+
+    void selectModules(QRect);
+    void deselectModules();
 
     void invalidateModules();
 
