@@ -31,3 +31,9 @@ In order to run a VDSL design, you just need to press the **Start** button in th
 - There is no undo/redo operation
 - There is no save or load mechanism
 - There is no graphical indication for why certain ports will not connect to eachother (e.g. incompatible types)
+____________________________________
+Copyright (C) 2018-2019 Tyler Hackett
+
+VDSL is licensed under the GNU General Public License. Read the LICENSE file for more information. 
+
+VDSL was developed using Qt. https://www.qt.io/
